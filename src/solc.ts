@@ -1,15 +1,7 @@
 import os from 'os';
 import { download, writeProgress } from './utils';
-import { join, basename, dirname } from 'path';
-import {
-  chmod,
-  chmodSync,
-  existsSync,
-  fstat,
-  mkdirSync,
-  renameSync,
-  writeFileSync,
-} from 'fs';
+import { join, basename, dirname, delimiter } from 'path';
+import { chmodSync, existsSync, mkdirSync, renameSync, writeFileSync } from 'fs';
 import extract from 'extract-zip';
 import * as rimraf from 'rimraf';
 import { config } from '.';
@@ -104,15 +96,19 @@ export class Solc {
 
   constructor(release: Release) {
     this.releaseMeta = release;
-    this.installPath = join(config.baseDirectory, this.releaseMeta.tag_name);
+    this.installPath = join(config.versionsDirectory, this.releaseMeta.tag_name);
   }
+
+  public matches = (version: string): boolean => {
+    return this.releaseMeta.tag_name === version || this.releaseMeta.tag_name.substring(1) === version;
+  };
 
   public toString = (): string => {
     return this.releaseMeta.tag_name + (this.installed() ? ' (installed)' : '');
   };
 
   public installed = (): boolean => {
-    return false;
+    return existsSync(this.installPath);
   };
 
   public isCompatible = (): boolean => {
@@ -131,12 +127,7 @@ export class Solc {
     } else if (os.type() === 'Windows') {
       return {
         asset: this.releaseMeta.assets.find(
-          i =>
-            [
-              'solc-windows.exe',
-              'solc-windows.zip',
-              'solidity-windows.zip',
-            ].indexOf(i.name) !== -1,
+          i => ['solc-windows.exe', 'solc-windows.zip', 'solidity-windows.zip'].indexOf(i.name) !== -1,
         ),
         postInstall: async path => {
           if (path.endsWith('.zip')) {
@@ -156,18 +147,13 @@ export class Solc {
     };
   };
 
-  public isInstalled = (): boolean => {
-    return existsSync(this.installPath);
-  };
-
   public install = async () => {
     const installData = this.getInstallStructure();
     const downloadUrl = installData.asset?.browser_download_url;
     if (downloadUrl !== undefined) {
       console.log(`Downloading and installing ${downloadUrl}`);
 
-      if (!existsSync(this.installPath))
-        mkdirSync(this.installPath, { recursive: true });
+      if (!existsSync(this.installPath)) mkdirSync(this.installPath, { recursive: true });
 
       const fileName = join(this.installPath, basename(downloadUrl));
       await download(downloadUrl, fileName, progress => {
@@ -177,22 +163,25 @@ export class Solc {
 
       installData.postInstall(fileName);
 
-      writeFileSync(
-        join(this.installPath, 'meta.json'),
-        JSON.stringify(this.releaseMeta),
-      );
+      writeFileSync(join(this.installPath, 'meta.json'), JSON.stringify(this.releaseMeta));
     }
   };
 
   public uninstall = () => {
-    if (this.isInstalled()) {
+    if (this.installed()) {
       rimraf.sync(this.installPath);
     }
   };
 
-  public useSystem = (): string => {
-    return '';
+  public pathString = (): string => {
+    return [
+      this.installPath,
+      ...process.env.PATH!.split(delimiter).filter(i => !i.startsWith(config.versionsDirectory)),
+    ].join(delimiter);
   };
 
-  public useProcess = () => {};
+  public useProcess = (): string => {
+    process.env.PATH = this.pathString();
+    return 'native';
+  };
 }

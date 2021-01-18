@@ -1,5 +1,5 @@
 {
-  "name": "libsvm",
+  "name": "svm",
   "version": "1.0.0",
   "description": "A JavaScript library to download and install different versions of the Soildity Compiler (solc)",
   "keywords": [],
@@ -8,7 +8,7 @@
   "main": "build/index.js",
   "bin": {
     "svm-bin": "./build/cli/cli.js",
-    "svm": "svm.sh"
+    "svm": "./scripts/svm.sh"
   },
   "scripts": {
     "build": "rimraf ./build && tsc",
@@ -17,7 +17,8 @@
     "start": "npm run build && node build/index.js",
     "start:dev": "nodemon",
     "test": "jest",
-    "test:dev": "jest --watchAll"
+    "test:dev": "jest --watchAll",
+    "postinstall": "./scripts/source_svm.sh"
   },
   "husky": {
     "hooks": {
@@ -26,6 +27,7 @@
   },
   "dependencies": {
     "clime": "^0.5.14",
+    "deasync-promise": "^1.0.1",
     "eslint-plugin-jest": "^24.1.0",
     "extract-zip": "^2.0.1",
     "fetch-paginate": "^6.1.0",

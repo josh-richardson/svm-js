@@ -14,11 +14,7 @@ export default class extends Command {
     })
     version: string,
   ) {
-    const wantedVersion = (await SolcVersions.getRemoteVersions()).find(
-      i =>
-        i.releaseMeta.tag_name === version ||
-        i.releaseMeta.tag_name.substring(1) === version,
-    );
+    const wantedVersion = (await SolcVersions.getRemoteVersions()).find(i => i.matches(version));
     if (wantedVersion !== undefined) {
       await wantedVersion.install();
       return `Version ${wantedVersion.releaseMeta.tag_name} installed!`;

@@ -8,11 +8,7 @@ export function writeProgress(p: string): void {
   process.stdout.write(p);
 }
 
-export async function download(
-  url: string,
-  path: PathLike,
-  onProgress: (percentage: number) => any,
-) {
+export async function download(url: string, path: PathLike, onProgress: (percentage: number) => any) {
   const res = await fetch(url);
   await new Promise<void>((resolve, reject) => {
     const fileStream = createWriteStream(path);

@@ -9,18 +9,22 @@ if (!(globalThis as any).fetch) {
 
 export interface Config {
   baseDirectory: string;
+  versionsDirectory: string;
 }
 
 export var config: Config = {
-  baseDirectory: join(homedir(), '.svm', 'versions'),
+  baseDirectory: join(homedir(), '.svm'),
+  versionsDirectory: join(homedir(), '.svm', 'versions'),
 };
 
 export function load(_config: Config) {
   config = _config;
 }
+
 if (!existsSync(config.baseDirectory)) {
   mkdirSync(config.baseDirectory, { recursive: true });
 }
 
+export * from './frameworks';
 export * from './solc';
 export * from './solc-versions';

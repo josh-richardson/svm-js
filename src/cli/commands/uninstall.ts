@@ -13,11 +13,7 @@ export default class extends Command {
     version: string,
   ) {
     SolcVersions.getLocalVersions()
-      .find(
-        i =>
-          i.releaseMeta.tag_name === version ||
-          i.releaseMeta.tag_name.substring(1) === version,
-      )
+      .find(i => i.releaseMeta.tag_name === version || i.releaseMeta.tag_name.substring(1) === version)
       ?.uninstall();
   }
 }
