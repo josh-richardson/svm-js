@@ -7,9 +7,10 @@ import Use from './use';
 })
 export default class extends Command {
   @metadata
-  async execute() {
+  async execute(): Promise<string> {
     if (instance().settings.lastUsed !== undefined) {
       return await new Use().execute(instance().settings.lastUsed);
     }
+    return '';
   }
 }

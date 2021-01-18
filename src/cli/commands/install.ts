@@ -1,7 +1,5 @@
 import { Command, command, param } from 'clime';
 import { SolcVersions } from '../../solc-versions';
-import { homedir } from 'os';
-import { join } from 'path';
 
 @command({
   description: 'Install a version',
@@ -13,7 +11,7 @@ export default class extends Command {
       required: true,
     })
     version: string,
-  ) {
+  ): Promise<string> {
     const wantedVersion = (await SolcVersions.getRemoteVersions()).find(i => i.matches(version));
     if (wantedVersion !== undefined) {
       await wantedVersion.install();

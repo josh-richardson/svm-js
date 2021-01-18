@@ -6,7 +6,7 @@ import { SolcVersions } from '../../solc-versions';
 })
 export default class extends Command {
   @metadata
-  async execute() {
+  async execute(): Promise<string> {
     return (await SolcVersions.getRemoteVersions())
       .reverse()
       .filter(i => i.isCompatible())

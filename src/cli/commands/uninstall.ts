@@ -1,4 +1,4 @@
-import { Command, command, metadata, param } from 'clime';
+import { Command, command, param } from 'clime';
 import { SolcVersions } from '../../solc-versions';
 
 @command({
@@ -11,9 +11,10 @@ export default class extends Command {
       required: true,
     })
     version: string,
-  ) {
+  ): Promise<string> {
     SolcVersions.getLocalVersions()
-      .find(i => i.releaseMeta.tag_name === version || i.releaseMeta.tag_name.substring(1) === version)
+      .find(i => i.matches(version))
       ?.uninstall();
+    return `Uninstalled ${version} successfully`;
   }
 }

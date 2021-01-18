@@ -119,17 +119,17 @@ export class Solc {
     if (os.type() === 'Darwin') {
       return {
         asset: this.releaseMeta.assets.find(i => i.name === 'solc-macos'),
-        postInstall: async path => {
+        postInstall: async (path): Promise<void> => {
           chmodSync(path, '0755');
           renameSync(path, join(dirname(path), 'solc'));
         },
       };
-    } else if (os.type() === 'Windows') {
+    } else if (os.type() === 'Windows_NT') {
       return {
         asset: this.releaseMeta.assets.find(
           i => ['solc-windows.exe', 'solc-windows.zip', 'solidity-windows.zip'].indexOf(i.name) !== -1,
         ),
-        postInstall: async path => {
+        postInstall: async (path): Promise<void> => {
           if (path.endsWith('.zip')) {
             await extract(path, { dir: dirname(path) });
           } else {
@@ -140,14 +140,14 @@ export class Solc {
     }
     return {
       asset: this.releaseMeta.assets.find(i => i.name === 'solc-static-linux'),
-      postInstall: async path => {
+      postInstall: async (path): Promise<void> => {
         chmodSync(path, '0755');
         renameSync(path, join(dirname(path), 'solc'));
       },
     };
   };
 
-  public install = async () => {
+  public install = async (): Promise<void> => {
     const installData = this.getInstallStructure();
     const downloadUrl = installData.asset?.browser_download_url;
     if (downloadUrl !== undefined) {
@@ -167,7 +167,7 @@ export class Solc {
     }
   };
 
-  public uninstall = () => {
+  public uninstall = (): void => {
     if (this.installed()) {
       rimraf.sync(this.installPath);
     }

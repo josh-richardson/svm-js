@@ -18,7 +18,7 @@ export default class Cli {
       : { lastUsed: undefined, aliases: {} };
   }
 
-  public async run() {
+  public async run(): Promise<void> {
     const cli = new CLI('svm', Path.join(__dirname, 'commands'));
     const shim = new Shim(cli);
     await shim.execute(process.argv);
@@ -33,6 +33,6 @@ if (require.main === module) {
   cli.run();
 }
 
-export function instance() {
+export function instance(): Cli {
   return cli;
 }

@@ -1,5 +1,5 @@
 import { Command, command, param } from 'clime';
-import { writeFileSync, writeSync } from 'fs';
+import { writeFileSync } from 'fs';
 import { SolcVersions } from '../../solc-versions';
 import { instance } from '../cli';
 
@@ -13,7 +13,7 @@ export default class Use extends Command {
       required: true,
     })
     version: string,
-  ) {
+  ): Promise<string> {
     const solcToUse = SolcVersions.getLocalVersions().find(i => i.matches(version));
     if (solcToUse) {
       instance().settings.lastUsed = solcToUse.releaseMeta.tag_name;

@@ -1,11 +1,16 @@
 {
-  "name": "svm",
+  "name": "svm-js",
   "version": "1.0.0",
   "description": "A JavaScript library to download and install different versions of the Soildity Compiler (solc)",
   "keywords": [],
   "license": "MIT",
   "author": "Joshua Richardson",
   "main": "build/index.js",
+  "files": [
+    "src/",
+    "scripts/",
+    "build/"
+  ],
   "bin": {
     "svm-bin": "./build/cli/cli.js",
     "svm": "./scripts/svm.sh"
@@ -18,7 +23,11 @@
     "start:dev": "nodemon",
     "test": "jest",
     "test:dev": "jest --watchAll",
-    "postinstall": "./scripts/source_svm.sh"
+    "postinstall": "scripts/postinstall.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/josh-richardson/svm-js.git"
   },
   "husky": {
     "hooks": {

@@ -7,7 +7,7 @@ import { instance } from '../cli';
 })
 export default class extends Command {
   @metadata
-  execute() {
+  execute(): string {
     return SolcVersions.getLocalVersions()
       .map(i => {
         return instance().settings.lastUsed === i.releaseMeta.tag_name ? i.toString() + ' (in use)' : i;

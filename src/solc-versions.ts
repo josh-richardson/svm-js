@@ -6,8 +6,7 @@ import { join } from 'path';
 export class SolcVersions {
   static async getRemoteVersions(): Promise<Solc[]> {
     const response = await fetchPaginate('https://api.github.com/repos/ethereum/solidity/releases?per_page=100');
-    const releases: Array<any> = response.items;
-    return releases.map((element: Release) => new Solc(element));
+    return response.items.map(element => new Solc(element as Release));
   }
 
   static solcFromVersion(version: string): Solc {

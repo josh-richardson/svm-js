@@ -1,7 +1,7 @@
 import { SolcVersions } from './solc-versions';
 import deasyncPromise from 'deasync-promise';
 
-export async function useNativeSolidity(version: string): Promise<string> {
+export async function nativeSolidity(version: string): Promise<string> {
   const solc =
     SolcVersions.getLocalVersions().find(i => i.matches(version)) ??
     (await SolcVersions.getRemoteVersions()).find(i => i.matches(version));
@@ -14,6 +14,6 @@ export async function useNativeSolidity(version: string): Promise<string> {
   return version;
 }
 
-export function useNativeSoliditySync(version: string): string {
-  return deasyncPromise(useNativeSolidity(version));
+export function useNativeSolidity(version: string): string {
+  return deasyncPromise(nativeSolidity(version));
 }
