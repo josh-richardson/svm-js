@@ -32,6 +32,10 @@ module.exports = {
 
 svm-js integrates with your shell and provides an `svm` command. The usage is identical to that of [svm](https://github.com/josh-richardson/svm).
 
+### Executables
+Executables used by svm are downloaded using TLS, and are served directly from the Solidity Github [releases page](https://github.com/ethereum/solidity/releases) for Windows and Linux. Unfortunately native images are not supplied for earlier solc versions on macOS, so they are downloaded from [this repository](https://github.com/web3j/solidity-darwin-binaries/releases).
+
+
 ### Notes:
 
 svm-js should be compatible with Node versions 10+. It also exposes useful functionality to download arbitary versions of Solidity when used as a library, beyond just the `useNativeSolidity` command. Using svm-js in Hardhat projects is not needed, as it already downloads & uses native solc binaries. 

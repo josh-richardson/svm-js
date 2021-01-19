@@ -7,5 +7,6 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   "roots": [
     "<rootDir>/src"
-  ]
+  ],
+  setupFilesAfterEnv: ['./jest.setup.js']
 };

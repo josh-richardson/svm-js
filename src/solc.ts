@@ -1,6 +1,6 @@
 import os from 'os';
 import { download, writeProgress } from './utils';
-import { join, basename, dirname, delimiter } from 'path';
+import { join, basename, dirname, delimiter, normalize } from 'path';
 import { chmodSync, existsSync, mkdirSync, renameSync, writeFileSync } from 'fs';
 import extract from 'extract-zip';
 import * as rimraf from 'rimraf';
@@ -112,13 +112,13 @@ export class Solc {
   };
 
   public isCompatible = (): boolean => {
-    return this.getInstallStructure() != undefined;
+    return this.getInstallStructure().asset != undefined;
   };
 
   public getInstallStructure = (): InstallData => {
     if (os.type() === 'Darwin') {
       return {
-        asset: this.releaseMeta.assets.find(i => i.name === 'solc-macos'),
+        asset: this.releaseMeta.assets.find(i => ['solc-macos', 'solc_mac'].indexOf(i.name) !== -1),
         postInstall: async (path): Promise<void> => {
           chmodSync(path, '0755');
           renameSync(path, join(dirname(path), 'solc'));
@@ -155,7 +155,7 @@ export class Solc {
 
       if (!existsSync(this.installPath)) mkdirSync(this.installPath, { recursive: true });
 
-      const fileName = join(this.installPath, basename(downloadUrl));
+      const fileName = normalize(join(this.installPath, basename(downloadUrl)));
       await download(downloadUrl, fileName, progress => {
         writeProgress(`Downloading: ${progress}%`);
       });
@@ -164,6 +164,10 @@ export class Solc {
       installData.postInstall(fileName);
 
       writeFileSync(join(this.installPath, 'meta.json'), JSON.stringify(this.releaseMeta));
+    } else {
+      console.log(
+        `Could not find a download URL for version ${this.releaseMeta.tag_name} for your current platform. Are you sure version ${this.releaseMeta.tag_name} appears in "svm ls-remote"?`,
+      );
     }
   };
 
