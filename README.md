@@ -1,10 +1,12 @@
 # svm-js
 
+Solidity Version Manager inspired by nvm & jabba. Speeds up Solidity compilation in Truffle projects and allows you to easily install & switch between different versions of the Solidity compiler (solc) from the Terminal.
+
 svm-js is a re-implementation of [svm](https://github.com/josh-richardson/svm) in TypeScript. It is currently in beta and is unstable. It can be used from the command-line in the same way as svm, or included in Truffle projects in order to speed up the `truffle compile` command significantly by using native solc binaries compiled for your platform of choice, rather than the solcjs implementation.
 
 ## Installation
 
-Run `npm install svm-js` if you wish to use svm-js as a library, or `npm install -g svm-js` if you want to use svm-js from the commandline. Installing using the `-g` option will add loader for svm-js your bashrc/zshrc, allowing you to use the `svm` command globally. Note that this CLI functionality currently only works on Linux and macOS, with Windows support coming soon.
+Run `npm install svm-js` if you wish to use svm-js as a library, or `npm install -g svm-js` if you want to use svm-js from the commandline. Installing using the `-g` option will add a loader function for svm-js your bashrc/zshrc, allowing you to use the `svm` command globally. Note that this CLI functionality currently only works on Linux and macOS, with Windows support coming soon.
 
 ## Usage with Truffle
 
