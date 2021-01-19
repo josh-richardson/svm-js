@@ -1,33 +1,40 @@
 {
   "name": "svm-js",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "A JavaScript library to download and install different versions of the Soildity Compiler (solc)",
-  "keywords": [],
+  "keywords": [
+    "ethereum",
+    "solc",
+    "blockchain",
+    "solidity",
+    "compiler",
+    "abi"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/josh-richardson/svm-js.git"
+  },
   "license": "MIT",
   "author": "Joshua Richardson",
   "main": "build/index.js",
+  "bin": {
+    "svm": "./scripts/svm.sh",
+    "svm-bin": "./build/cli/cli.js"
+  },
   "files": [
     "src/",
     "scripts/",
     "build/"
   ],
-  "bin": {
-    "svm-bin": "./build/cli/cli.js",
-    "svm": "./scripts/svm.sh"
-  },
   "scripts": {
     "build": "rimraf ./build && tsc",
+    "postinstall": "scripts/postinstall.js",
     "lint": "eslint . --ext .ts",
     "prettier": "prettier --config .prettierrc 'src/**/*.ts' --write",
     "start": "npm run build && node build/index.js",
     "start:dev": "nodemon",
     "test": "jest",
-    "test:dev": "jest --watchAll",
-    "postinstall": "scripts/postinstall.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/josh-richardson/svm-js.git"
+    "test:dev": "jest --watchAll"
   },
   "husky": {
     "hooks": {

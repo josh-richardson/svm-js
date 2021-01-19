@@ -1,4 +1,5 @@
 svm() {
+  export NODE_NO_WARNINGS=1
   temporaryFile=$(mktemp /tmp/svm-eval.XXXXXX)
   TEMP_FILE=$temporaryFile svm-bin "$@"
   local exit_code=$?
