@@ -12,7 +12,7 @@ export default class extends Command {
     })
     version: string,
   ): Promise<string> {
-    const wantedVersion = (await SolcVersions.getRemoteVersions()).find(i => i.matches(version));
+    const wantedVersion = (await new SolcVersions().getRemoteVersions()).find(i => i.matches(version));
     if (wantedVersion !== undefined) {
       await wantedVersion.install();
       return `Version ${wantedVersion.releaseMeta.tag_name} installed!`;

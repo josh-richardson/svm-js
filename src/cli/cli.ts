@@ -2,14 +2,14 @@
 import * as Path from 'path';
 import { CLI, Shim } from 'clime';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
-import { config } from '..';
+import { homedir } from 'os';
 
 export interface Settings {
   lastUsed: string;
 }
 
 export default class Cli {
-  static settingsFile = Path.join(config.baseDirectory, 'settings.json');
+  static settingsFile = Path.join(homedir(), '.svm', 'settings.json');
   public settings: Settings;
 
   constructor() {

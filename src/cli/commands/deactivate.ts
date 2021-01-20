@@ -1,7 +1,6 @@
 import { Command, command, metadata, param } from 'clime';
 import { writeFileSync } from 'fs';
 import { delimiter } from 'path';
-import { config } from '../..';
 
 @command({
   description: 'Deactivate svm in the current shell',
@@ -16,7 +15,7 @@ export default class extends Command {
         'export PATH=' +
           process.env
             .PATH!.split(delimiter)
-            .filter(i => !i.startsWith(config.versionsDirectory))
+            .filter(i => i.indexOf('.svm/versions') == -1)
             .join(delimiter),
       );
       return 'svm deactivated';

@@ -1,28 +1,13 @@
 import fetch from 'node-fetch';
-import { homedir } from 'os';
-import { join } from 'path';
-import { existsSync, mkdirSync } from 'fs';
 
-if (!(global as any).fetch) {
-  (global as any).fetch = fetch;
+
+interface Global extends NodeJS.Global {
+  fetch: typeof fetch;
 }
+declare let global: Global;
 
-export interface Config {
-  baseDirectory: string;
-  versionsDirectory: string;
-}
-
-export var config: Config = {
-  baseDirectory: join(homedir(), '.svm'),
-  versionsDirectory: join(homedir(), '.svm', 'versions'),
-};
-
-export function load(_config: Config) {
-  config = _config;
-}
-
-if (!existsSync(config.versionsDirectory)) {
-  mkdirSync(config.versionsDirectory, { recursive: true });
+if (!global.fetch) {
+  global.fetch = fetch;
 }
 
 export * from './frameworks';

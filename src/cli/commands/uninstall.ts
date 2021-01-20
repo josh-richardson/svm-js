@@ -12,7 +12,8 @@ export default class extends Command {
     })
     version: string,
   ): Promise<string> {
-    SolcVersions.getLocalVersions()
+    new SolcVersions()
+      .getLocalVersions()
       .find(i => i.matches(version))
       ?.uninstall();
     return `Uninstalled ${version} successfully`;

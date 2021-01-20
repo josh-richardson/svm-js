@@ -14,7 +14,7 @@ export default class Use extends Command {
     })
     version: string,
   ): Promise<string> {
-    const solcToUse = SolcVersions.getLocalVersions().find(i => i.matches(version));
+    const solcToUse = new SolcVersions().getLocalVersions().find(i => i.matches(version));
     if (solcToUse) {
       instance().settings.lastUsed = solcToUse.releaseMeta.tag_name;
       const activateCommand = `export PATH=${solcToUse.pathString()}`;

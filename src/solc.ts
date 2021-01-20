@@ -4,7 +4,6 @@ import { join, basename, dirname, delimiter, normalize } from 'path';
 import { chmodSync, existsSync, mkdirSync, renameSync, writeFileSync } from 'fs';
 import extract from 'extract-zip';
 import * as rimraf from 'rimraf';
-import { config } from '.';
 
 export interface Author {
   login: string;
@@ -91,20 +90,22 @@ interface InstallData {
 }
 
 export class Solc {
-  public releaseMeta: Release;
-  public installPath: string;
+  public readonly releaseMeta: Release;
+  public readonly installPath: string;
+  private readonly versionsDirectory: string;
 
-  constructor(release: Release) {
+  constructor(release: Release, versionsDirectory: string) {
     this.releaseMeta = release;
-    this.installPath = join(config.versionsDirectory, this.releaseMeta.tag_name);
+    this.versionsDirectory = versionsDirectory;
+    this.installPath = join(versionsDirectory, this.releaseMeta.tag_name);
   }
 
   public matches = (version: string): boolean => {
     return this.releaseMeta.tag_name === version || this.releaseMeta.tag_name.substring(1) === version;
   };
 
-  public toString = (): string => {
-    return this.releaseMeta.tag_name + (this.installed() ? ' (installed)' : '');
+  public toString = (showInstalled = false): string => {
+    return `${this.releaseMeta.tag_name}${(showInstalled && this.installed() && ' (installed)') || ''}`;
   };
 
   public installed = (): boolean => {
@@ -180,7 +181,7 @@ export class Solc {
   public pathString = (): string => {
     return [
       this.installPath,
-      ...process.env.PATH!.split(delimiter).filter(i => !i.startsWith(config.versionsDirectory)),
+      ...process.env.PATH!.split(delimiter).filter(i => !i.startsWith(this.versionsDirectory)),
     ].join(delimiter);
   };
 

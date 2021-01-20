@@ -1,20 +1,31 @@
 import { fetchPaginate } from 'fetch-paginate';
-import { config, Release, Solc } from '.';
+import { Release, Solc } from '.';
 import * as fs from 'fs';
-import { join } from 'path';
+import { join, normalize } from 'path';
 import * as os from 'os';
 
 export class SolcVersions {
-  static async getRemoteVersions(): Promise<Solc[]> {
+  public readonly baseDirectory: string;
+  public readonly versionsDirectory: string;
+
+  constructor(baseDirectory: string = join(os.homedir(), '.svm')) {
+    this.baseDirectory = normalize(baseDirectory);
+    this.versionsDirectory = join(baseDirectory, 'versions');
+    if (!fs.existsSync(this.versionsDirectory)) {
+      fs.mkdirSync(this.versionsDirectory, { recursive: true });
+    }
+  }
+
+  async getRemoteVersions(): Promise<Solc[]> {
     const response = await fetchPaginate('https://api.github.com/repos/ethereum/solidity/releases?per_page=100');
-    let githubSolidityReleases = response.items.map(element => new Solc(element as Release));
+    let githubSolidityReleases = response.items.map(element => new Solc(element as Release, this.versionsDirectory));
     if (os.type() === 'Darwin') {
       const macResponse = await fetchPaginate(
         'https://api.github.com/repos/web3j/solidity-darwin-binaries/releases?per_page=100',
       );
-      const macReleases = macResponse.items.map(element => new Solc(element as Release));
+      const macReleases = macResponse.items.map(element => new Solc(element as Release, this.versionsDirectory));
       githubSolidityReleases = githubSolidityReleases.map(i => {
-        let relevant = macReleases.find(j => j.releaseMeta.tag_name === i.releaseMeta.tag_name);
+        const relevant = macReleases.find(j => j.releaseMeta.tag_name === i.releaseMeta.tag_name);
         if (relevant) {
           i.releaseMeta.assets = [...i.releaseMeta.assets, ...relevant.releaseMeta.assets];
         }
@@ -24,11 +35,14 @@ export class SolcVersions {
     return githubSolidityReleases;
   }
 
-  static solcFromVersion(version: string): Solc {
-    return new Solc(JSON.parse(fs.readFileSync(join(config.versionsDirectory, version, 'meta.json'), 'utf8')));
+  solcFromVersion(version: string): Solc {
+    return new Solc(
+      JSON.parse(fs.readFileSync(join(this.versionsDirectory, version, 'meta.json'), 'utf8')),
+      this.versionsDirectory,
+    );
   }
 
-  static getLocalVersions(): Solc[] {
-    return fs.readdirSync(config.versionsDirectory).map(i => this.solcFromVersion(i));
+  getLocalVersions(): Solc[] {
+    return fs.readdirSync(this.versionsDirectory).map(i => this.solcFromVersion(i));
   }
 }

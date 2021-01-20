@@ -7,10 +7,10 @@ import { SolcVersions } from '../../solc-versions';
 export default class extends Command {
   @metadata
   async execute(): Promise<string> {
-    return (await SolcVersions.getRemoteVersions())
+    return (await new SolcVersions().getRemoteVersions())
       .reverse()
       .filter(i => i.isCompatible())
-      .map(i => i.toString())
+      .map(i => i.toString(true))
       .join('\n');
   }
 }
