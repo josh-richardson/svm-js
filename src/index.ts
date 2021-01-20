@@ -1,6 +1,5 @@
 import fetch from 'node-fetch';
 
-
 interface Global extends NodeJS.Global {
   fetch: typeof fetch;
 }
